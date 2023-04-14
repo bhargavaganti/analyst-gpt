@@ -1,7 +1,15 @@
 import requests
+import os
+import openai
+ 
+def get_api_key():
+    api_key = os.environ["OPENAI_API_KEY"]
+    openai.api_key = api_key    # set the api key for the openai library
+    return api_key
+
+api_key = get_api_key()
 
 prompt = "JP Morgan"
-api_key = "OPENAI_API_KEY"
 
 def generate_report(prompt, api_key):
     url = "https://api.openai.com/v1/engines/text-davinci-003/completions"
@@ -12,7 +20,7 @@ def generate_report(prompt, api_key):
 
     data = {
         "prompt": f"Create a consultant-type report based on the following prompt: {prompt}",
-        "max_tokens": 5000,
+        "max_tokens": 1000,
         "n": 1,
         "stop": None,
         "temperature": 0.7,
