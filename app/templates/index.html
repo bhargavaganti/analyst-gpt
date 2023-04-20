@@ -18,20 +18,21 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // analystgpt form-related
             const form = document.querySelector("#prompt-form");
             const resultDiv = document.querySelector("#result");
             const spinner = document.querySelector("#spinner");
-    
+
             form.addEventListener("submit", async function(event) {
                 event.preventDefault();
                 const prompt = form.elements["prompt"].value;
-                spinner.classList.remove("d-none"); // Show the spinner
+                spinner.classList.remove("d-none"); // Show spinner
                 const response = await fetch("/", {
                     method: "POST",
                     body: new FormData(form),
                 });
                 const data = await response.json();
-                spinner.classList.add("d-none"); // Hide the spinner
+                spinner.classList.add("d-none"); // Hide spinner
                 resultDiv.innerHTML = `
                     <h3>text-davinci-003 Output:</h3>
                     <p>${data.text_davinci}</p>
@@ -39,20 +40,20 @@
                     <p>${data.gpt4}</p>
                 `;
             });
-    
-            // Listen for message from the parent page on johncollins.ai
-            window.addEventListener("message", function (event) {
-                // Check for the predefinedQuestion property in the received message
-                if (event.data && event.data.predefinedQuestion) {
-                    const questionInput = document.querySelector("#prompt");
-                    if (questionInput) {
-                        questionInput.value = event.data.predefinedQuestion;
-                    }
-                }
-            });
+
+            // Predefined question to pass to parent form in johncollins.ai
+            const urlParams = new URLSearchParams(window.location.search);
+            const predefinedQuestion = urlParams.get('question');
+
+            if (predefinedQuestion) {
+                const questionInput = document.querySelector('#question-input');
+                const submitButton = document.querySelector('#submit-button');
+
+                questionInput.value = predefinedQuestion;
+                submitButton.click();
+            }
         });
     </script>
-    
 
     <style>
         body {
