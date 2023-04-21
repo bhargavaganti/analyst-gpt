@@ -22,8 +22,8 @@
             const form = document.querySelector("#prompt-form");
             const resultDiv = document.querySelector("#result");
             const spinner = document.querySelector("#spinner");
-
-            form.addEventListener("submit", async function(event) {
+    
+            async function handleSubmit(event) {
                 event.preventDefault();
                 const prompt = form.elements["prompt"].value;
                 spinner.classList.remove("d-none"); // Show spinner
@@ -39,16 +39,20 @@
                     <h3>GPT-4 Output:</h3>
                     <p>${data.gpt4}</p>
                 `;
-            });
-
-                // Set the input field's value with the passed question
-                const predefinedQuestion = "{{ predefined_question }}";
-                if (predefinedQuestion) {
-                    const questionInput = document.querySelector('#prompt');
-                    questionInput.value = predefinedQuestion;
-                }
-            });
+            }
+    
+            form.addEventListener("submit", handleSubmit);
+    
+            // Set the input field's value with the passed question
+            const predefinedQuestion = "{{ predefined_question }}";
+            if (predefinedQuestion) {
+                const questionInput = document.querySelector('#prompt');
+                questionInput.value = predefinedQuestion;
+                handleSubmit(new Event("submit")); // Trigger submit event
+            }
+        });
     </script>
+    
 
     <style>
         body {
