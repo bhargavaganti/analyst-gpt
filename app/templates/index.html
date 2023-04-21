@@ -41,18 +41,13 @@
                 `;
             });
 
-            // Predefined question to pass to parent form in johncollins.ai
-            const urlParams = new URLSearchParams(window.location.search);
-            const predefinedQuestion = urlParams.get('question');
-
-            if (predefinedQuestion) {
-                const questionInput = document.querySelector('#question-input');
-                const submitButton = document.querySelector('#submit-button');
-
-                questionInput.value = predefinedQuestion;
-                submitButton.click();
-            }
-        });
+                // Set the input field's value with the passed question
+                const predefinedQuestion = "{{ predefined_question }}";
+                if (predefinedQuestion) {
+                    const questionInput = document.querySelector('#prompt');
+                    questionInput.value = predefinedQuestion;
+                }
+            });
     </script>
 
     <style>
