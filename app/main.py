@@ -19,11 +19,11 @@ def index():
 @bp.route('/predefined')
 def predefined():
     questions = [
-        "Is Deutsche Bank solvent?",
-        "Is Tesla sanctioned?",
-        "Does Apple have large cash reserves?",
-        "Is Amazon a technology company?",
-        "What is a PE ratio?",
+        "Example question: Is Deutsche Bank solvent?",
+        "Example question: Is Tesla sanctioned?",
+        "Example question: Does Apple have large cash reserves?",
+        "Example question: Does Alibaba have Cayman Island registered subsidiaries?",
+        "Example question: How strong is Microsoft's balance sheet?",
     ]
     question = random.choice(questions)
     return render_template('index.html', predefined_question=question)
