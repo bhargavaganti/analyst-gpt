@@ -23,7 +23,6 @@
             const resultDiv = document.querySelector("#result");
             const skeletonScreen = document.getElementById("skeleton-screen");
 
-        
             async function handleSubmit(event) {
                 event.preventDefault();
                 const prompt = form.elements["prompt"].value;
@@ -38,9 +37,11 @@
                 skeletonScreen.classList.add("d-none"); // Hide skeleton screen
                 spinner.style.display = "none"; // Hide spinner
                 resultDiv.innerHTML = `
-                    <h3>Business Analyst Output:</h3>
+                    <h3>Modality: Analytical</h3>
+                    <h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>
                     <p>${data.gpt4}</p>
                 `;
+                form.elements["prompt"].value = ""; // Reset the input field to its placeholder
             }
     
             form.addEventListener("submit", handleSubmit);
@@ -55,7 +56,6 @@
         });
     </script>
     
-
     <style>
         body {
             background-color: #343a40;
@@ -204,7 +204,7 @@
                 <div class="mb-3">
                     <div class="position-relative">
                         <div class="input-spinner-wrapper">
-                            <input type="text" class="form-control" id="prompt" name="prompt" placeholder="Ask AnalystGPT anything ..." required>
+                            <input type="text" class="form-control" id="prompt" name="prompt" placeholder="Assign a task to AnalystGPT ..." required>
                             <button type="submit" class="btn btn-primary submit-button circle-btn"><i class="fas fa-arrow-right"></i></button>
                             <div class="spinner">
                                 <div class="dot dot-1"></div>

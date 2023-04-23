@@ -16,10 +16,10 @@ def generate_gpt4_response(prompt, api_key):
         messages=[
             {"role": "system", "content": prompt}
         ],
-        max_tokens=1000,
+        max_tokens=1500,
         n=1,
         stop=None,
-        temperature=0.7,
+        temperature=0.5,    # temp controls randomness of the model's output, lower temperature = more conservative response
     )
 
     return response.choices[0]["message"]["content"]
