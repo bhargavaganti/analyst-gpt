@@ -35,11 +35,20 @@
                 event.preventDefault();
                 const prompt = form.elements["prompt"].value;
                 skeletonScreen.classList.remove("d-none"); // Show skeleton screen
-
+                const spinner = document.querySelector(".spinner");
+                spinner.style.display = "flex"; // Show spinner
+                const response = await fetch("/", {
+                    method: "POST",
+                    body: new FormData(form),
+                });
+                const data = await response.json();
+                skeletonScreen.classList.add("d-none"); // Hide skeleton screen
+                spinner.style.display = "none"; // Hide spinner
+                
                 // Clear the resultDiv
                 resultDiv.innerHTML = "";
 
-                // Create divs for each modality
+                // Create divs for each modality and display text word-by-word
                 const analyticalDiv = document.createElement('div');
                 const investigativeDiv = document.createElement('div');
                 const financialDiv = document.createElement('div');
@@ -48,39 +57,14 @@
                 resultDiv.appendChild(investigativeDiv);
                 resultDiv.appendChild(financialDiv);
 
-                // Function to fetch and display the result for a given modality
-                async function fetchAndDisplay(modality, div) {
-                    const formData = new FormData(form);
-                    formData.append("modality", modality);
+                analyticalDiv.innerHTML = `<h3>Modality: Analytical</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
+                investigativeDiv.innerHTML = `<h3>Modality: Investigative</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
+                financialDiv.innerHTML = `<h3>Modality: Financial</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
 
-                    const spinner = document.createElement("div");
-                    spinner.className = "spinner";
-                    spinner.innerHTML = `
-                        <div class="dot dot-1"></div>
-                        <div class="dot dot-2"></div>
-                        <div class="dot dot-3"></div>
-                        <div class="dot dot-4"></div>
-                    `;
-                    div.appendChild(spinner);
-                    spinner.style.display = "flex"; // Show spinner
+                await displayTextByWords(data.gpt4_analytical, analyticalDiv);
+                await displayTextByWords(data.gpt4_investigative, investigativeDiv);
+                await displayTextByWords(data.gpt4_financial, financialDiv);
 
-                    const response = await fetch("/", {
-                        method: "POST",
-                        body: formData,
-                    });
-                    const data = await response.json();
-                    spinner.style.display = "none"; // Hide spinner
-
-                    div.innerHTML = `<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
-                    await displayTextByWords(data[`gpt4_${modality.toLowerCase()}`], div);
-                }
-
-                // Fetch and display results for each modality progressively
-                await fetchAndDisplay("Analytical", analyticalDiv);
-                await fetchAndDisplay("Investigative", investigativeDiv);
-                await fetchAndDisplay("Financial", financialDiv);
-
-                skeletonScreen.classList.add("d-none"); // Hide skeleton screen
                 form.elements["prompt"].value = ""; // Reset the input field to its placeholder
             }
 

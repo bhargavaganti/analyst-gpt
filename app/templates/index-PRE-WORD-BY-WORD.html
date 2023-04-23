@@ -23,67 +23,40 @@
             const resultDiv = document.querySelector("#result");
             const skeletonScreen = document.getElementById("skeleton-screen");
 
-            async function displayTextByWords(text, element) {
-                const words = text.split(' ');
-                for (const word of words) {
-                    element.innerHTML += word + ' ';
-                    await new Promise(r => setTimeout(r, 10)); // Adjust the delay here (units=milliseconds)
-                }
-            }
-
             async function handleSubmit(event) {
                 event.preventDefault();
                 const prompt = form.elements["prompt"].value;
                 skeletonScreen.classList.remove("d-none"); // Show skeleton screen
-
-                // Clear the resultDiv
-                resultDiv.innerHTML = "";
-
-                // Create divs for each modality
-                const analyticalDiv = document.createElement('div');
-                const investigativeDiv = document.createElement('div');
-                const financialDiv = document.createElement('div');
-
-                resultDiv.appendChild(analyticalDiv);
-                resultDiv.appendChild(investigativeDiv);
-                resultDiv.appendChild(financialDiv);
-
-                // Function to fetch and display the result for a given modality
-                async function fetchAndDisplay(modality, div) {
-                    const formData = new FormData(form);
-                    formData.append("modality", modality);
-
-                    const spinner = document.createElement("div");
-                    spinner.className = "spinner";
-                    spinner.innerHTML = `
-                        <div class="dot dot-1"></div>
-                        <div class="dot dot-2"></div>
-                        <div class="dot dot-3"></div>
-                        <div class="dot dot-4"></div>
-                    `;
-                    div.appendChild(spinner);
-                    spinner.style.display = "flex"; // Show spinner
-
-                    const response = await fetch("/", {
-                        method: "POST",
-                        body: formData,
-                    });
-                    const data = await response.json();
-                    spinner.style.display = "none"; // Hide spinner
-
-                    div.innerHTML = `<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
-                    await displayTextByWords(data[`gpt4_${modality.toLowerCase()}`], div);
-                }
-
-                // Fetch and display results for each modality progressively
-                await fetchAndDisplay("Analytical", analyticalDiv);
-                await fetchAndDisplay("Investigative", investigativeDiv);
-                await fetchAndDisplay("Financial", financialDiv);
-
+                const spinner = document.querySelector(".spinner");
+                spinner.style.display = "flex"; // Show spinner
+                const response = await fetch("/", {
+                    method: "POST",
+                    body: new FormData(form),
+                });
+                const data = await response.json();
                 skeletonScreen.classList.add("d-none"); // Hide skeleton screen
+                spinner.style.display = "none"; // Hide spinner
+                // Handle 3 different modality results
+                resultDiv.innerHTML = `     
+                    <div>
+                        <h3>Modality: Analytical</h3>
+                        <h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>
+                        <p>${data.gpt4_analytical}</p>
+                    </div>
+                    <div>
+                        <h3>Modality: Investigative</h3>
+                        <h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>
+                        <p>${data.gpt4_investigative}</p>
+                    </div>
+                    <div>
+                        <h3>Modality: Financial</h3>
+                        <h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>
+                        <p>${data.gpt4_financial}</p>
+                    </div>
+                `;
                 form.elements["prompt"].value = ""; // Reset the input field to its placeholder
             }
-
+    
             form.addEventListener("submit", handleSubmit);
     
             // Set the input field's value with the passed question
