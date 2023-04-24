@@ -17,18 +17,15 @@
     <a href="https://johncollins.ai/analystgpt"><img src="https://johncollins.ai/analystgpt/static/images/favicon.ico" alt="Favicon" style="display:none;"></a>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        
+        document.addEventListener("DOMContentLoaded", function () {
             // analystgpt form-related
             const form = document.querySelector("#prompt-form");
             const resultDiv = document.querySelector("#result");
             const skeletonScreen = document.getElementById("skeleton-screen");
 
-            async function displayTextByWords(text, element) {
-                const words = text.split(' ');
-                for (const word of words) {
-                    element.innerHTML += word + ' ';
-                    await new Promise(r => setTimeout(r, 25)); // Adjust the delay here (units=milliseconds)
-                }
+            function displayTextWithHTML(text, element) {
+                element.innerHTML += text;
             }
 
             async function handleSubmit(event) {
@@ -74,21 +71,24 @@
                     spinner.style.display = "none"; // Hide spinner
 
                     div.innerHTML = `<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
-                    await displayTextByWords(data[`gpt4_${modality.toLowerCase()}`], div);
+
+                    const text = data[`gpt4_${modality.toLowerCase()}`];
+                    const words = text.split(' ');
+                    for (let i = 0; i < words.length; i++) {
+                        await new Promise(resolve => setTimeout(resolve, 25)); // Delay in milliseconds between displaying words
+                        div.innerHTML += words[i] + ' ';
+                    }
                 }
 
-                // Fetch and display results for each modality progressively
                 await fetchAndDisplay("Analytical", analyticalDiv);
                 await fetchAndDisplay("Investigative", investigativeDiv);
                 await fetchAndDisplay("Financial", financialDiv);
 
                 skeletonScreen.classList.add("d-none"); // Hide skeleton screen
-                form.elements["prompt"].value = ""; // Reset the input field to its placeholder
             }
 
-
             form.addEventListener("submit", handleSubmit);
-    
+
             // Set the input field's value with the passed question
             const predefinedQuestion = "{{ predefined_question }}";
             if (predefinedQuestion) {
@@ -97,6 +97,7 @@
                 handleSubmit(new Event("submit")); // Trigger submit event
             }
         });
+
     </script>
     
     <style>
