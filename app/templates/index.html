@@ -27,7 +27,7 @@
                 const words = text.split(' ');
                 for (const word of words) {
                     element.innerHTML += word + ' ';
-                    await new Promise(r => setTimeout(r, 10)); // Adjust the delay here (units=milliseconds)
+                    await new Promise(r => setTimeout(r, 25)); // Adjust the delay here (units=milliseconds)
                 }
             }
 
@@ -45,10 +45,12 @@
                 const financialDiv = document.createElement('div');
 
                 resultDiv.appendChild(analyticalDiv);
+                resultDiv.appendChild(document.createElement('br')); // blank line
                 resultDiv.appendChild(investigativeDiv);
+                resultDiv.appendChild(document.createElement('br')); // blank line
                 resultDiv.appendChild(financialDiv);
 
-                // Function to fetch and display the result for a given modality
+                // Fetch and display the result for a given modality
                 async function fetchAndDisplay(modality, div) {
                     const formData = new FormData(form);
                     formData.append("modality", modality);
@@ -83,6 +85,7 @@
                 skeletonScreen.classList.add("d-none"); // Hide skeleton screen
                 form.elements["prompt"].value = ""; // Reset the input field to its placeholder
             }
+
 
             form.addEventListener("submit", handleSubmit);
     
