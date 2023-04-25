@@ -17,40 +17,34 @@
     <a href="https://johncollins.ai/analystgpt"><img src="https://johncollins.ai/analystgpt/static/images/favicon.ico" alt="Favicon" style="display:none;"></a>
 
     <script>
-        
         document.addEventListener("DOMContentLoaded", function () {
-            // analystgpt form-related
             const form = document.querySelector("#prompt-form");
             const resultDiv = document.querySelector("#result");
             const skeletonScreen = document.getElementById("skeleton-screen");
 
-            function displayTextWithHTML(text, element) {
-                element.innerHTML += text;
-            }
+            const modalityButtons = document.querySelectorAll("#modalities .btn");
+            modalityButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                modalityButtons.forEach((btn) => {
+                btn.classList.remove("active");
+                });
+                this.classList.add("active");
+                const modalityValue = this.getAttribute("data-value");
+                document.getElementById("modality").value = modalityValue;
+            });
+            });
 
             async function handleSubmit(event) {
                 event.preventDefault();
                 const prompt = form.elements["prompt"].value;
+                const modality = form.elements["modality"].value;
                 skeletonScreen.classList.remove("d-none"); // Show skeleton screen
 
                 // Clear the resultDiv
                 resultDiv.innerHTML = "";
 
-                // Create divs for each modality
-                const analyticalDiv = document.createElement('div');
-                const investigativeDiv = document.createElement('div');
-                const financialDiv = document.createElement('div');
-
-                resultDiv.appendChild(analyticalDiv);
-                resultDiv.appendChild(document.createElement('br')); // blank line
-                resultDiv.appendChild(investigativeDiv);
-                resultDiv.appendChild(document.createElement('br')); // blank line
-                resultDiv.appendChild(financialDiv);
-
-                // Fetch and display the result for a given modality
-                async function fetchAndDisplay(modality, div) {
+                async function fetchAndDisplay(modality) {
                     const formData = new FormData(form);
-                    formData.append("modality", modality);
 
                     const spinner = document.createElement("div");
                     spinner.className = "spinner";
@@ -60,36 +54,32 @@
                         <div class="dot dot-3"></div>
                         <div class="dot dot-4"></div>
                     `;
-                    div.appendChild(spinner);
+                    resultDiv.appendChild(spinner);
                     spinner.style.display = "flex"; // Show spinner
 
-                    const response = await fetch("/", {
+                    const response = await fetch("/get_completion", {
                         method: "POST",
                         body: formData,
                     });
                     const data = await response.json();
                     spinner.style.display = "none"; // Hide spinner
 
-                    div.innerHTML = `<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
+                    resultDiv.innerHTML = `<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
 
-                    const text = data[`gpt4_${modality.toLowerCase()}`];
+                    const text = data.response;
                     const words = text.split(' ');
                     for (let i = 0; i < words.length; i++) {
                         await new Promise(resolve => setTimeout(resolve, 25)); // Delay in milliseconds between displaying words
-                        div.innerHTML += words[i] + ' ';
+                        resultDiv.innerHTML += words[i] + ' ';
                     }
                 }
 
-                await fetchAndDisplay("Analytical", analyticalDiv);
-                await fetchAndDisplay("Investigative", investigativeDiv);
-                await fetchAndDisplay("Financial", financialDiv);
-
+                await fetchAndDisplay(modality);
                 skeletonScreen.classList.add("d-none"); // Hide skeleton screen
             }
 
             form.addEventListener("submit", handleSubmit);
 
-            // Set the input field's value with the passed question
             const predefinedQuestion = "{{ predefined_question }}";
             if (predefinedQuestion) {
                 const questionInput = document.querySelector('#prompt');
@@ -215,6 +205,19 @@
             }
         }
 
+        #modalities .btn {
+            margin-right: 8px;
+        }
+
+        #modalities .btn:last-child {
+            margin-right: 0;
+        }
+
+        #modalities .btn.active {
+            background-color: #69f0ae;
+            color: #333333;
+        }
+
     </style>
 
 </head>
@@ -244,22 +247,33 @@
   
     <div class="container text-white">
         <p class="text-center text-lightgrey my-4">Model: GPT-4</p>
-            <form id="prompt-form">
-                <div class="mb-3">
-                    <div class="position-relative">
-                        <div class="input-spinner-wrapper">
-                            <input type="text" class="form-control" id="prompt" name="prompt" placeholder="Assign a task to AnalystGPT ..." required>
-                            <button type="submit" class="btn btn-primary submit-button circle-btn"><i class="fas fa-arrow-right"></i></button>
-                            <div class="spinner">
-                                <div class="dot dot-1"></div>
-                                <div class="dot dot-2"></div>
-                                <div class="dot dot-3"></div>
-                                <div class="dot dot-4"></div>
-                            </div>
+        <form id="prompt-form">
+
+            <div class="mb-3 text-center">
+                    <label for="modalities" class="form-label d-block mb-2">Choose a modality:</label>
+                    <div id="modalities" class="d-inline-block">
+                    <input type="hidden" name="modality" id="modality" value="business analyst">
+                    <button type="button" class="btn btn-primary active" data-value="business analyst">Analytical</button>
+                    <button type="button" class="btn btn-primary" data-value="investigator">Investigative</button>
+                    <button type="button" class="btn btn-primary" data-value="financial analyst">Financial</button>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <div class="position-relative">
+                    <div class="input-spinner-wrapper">
+                        <input type="text" class="form-control" id="prompt" name="prompt" placeholder="Enter company name ..." required>
+                        <button type="submit" class="btn btn-primary submit-button circle-btn"><i class="fas fa-arrow-right"></i></button>
+                        <div class="spinner">
+                            <div class="dot dot-1"></div>
+                            <div class="dot dot-2"></div>
+                            <div class="dot dot-3"></div>
+                            <div class="dot dot-4"></div>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
+        </form>
         <div id="result" class="mt-4"></div>
     </div>
     

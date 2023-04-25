@@ -26,12 +26,12 @@ def generate_gpt4_response(prompt, modality, api_key):
     elif modality == "financial analyst":
         user_prompt = f"Please generate a response about {prompt} from the perspective of a financial analyst. Start with this introduction sentence: '{intro_sentence_financial}' Then create a table with 3 columns: Assets & Liabilities, Cashflows & Liquidity, and Key Financial Ratios. Include 3 sentences or data points in each column, and ensure the information is relevant to a financial analyst's perspective."
     else:
-        raise ValueError("Modality must be one of 'business analyst', 'investigator', or 'financial analyst'.")
+        user_prompt = f"Please provide an answer about {prompt} from the perspective of a {modality}."
 
     response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": f"You are a {modality}."},
+            {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": user_prompt}
         ],
         max_tokens=1000,
@@ -42,6 +42,7 @@ def generate_gpt4_response(prompt, modality, api_key):
 
     formatted_response = response.choices[0]["message"]["content"]
     return formatted_response
+
 
 
 if __name__ == "__main__":

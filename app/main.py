@@ -7,18 +7,19 @@ bp = Blueprint("main", __name__)
 
 @bp.route("/", methods=["GET", "POST"])
 def index():
-    if request.method == "POST":
-        prompt = request.form["prompt"]
-        modality = request.form.get("modality")
-        api_key = get_api_key()
-
-        # Generate response for the specific modality
-        gpt4_response = generate_gpt4_response(prompt, modality, api_key)
-
-        # jsonify() converts Python dictionary to JSON for the specific modality
-        return jsonify({f"gpt4_{modality.lower()}": gpt4_response})
-
     return render_template("index.html")
+
+@bp.route('/get_completion', methods=["POST"])
+def get_completion():
+    prompt = request.form["prompt"]
+    modality = request.form.get("modality")
+    api_key = get_api_key()
+
+    # Generate response for the specific modality
+    gpt4_response = generate_gpt4_response(prompt, modality, api_key)
+
+    # jsonify() converts Python dictionary to JSON for the specific modality
+    return jsonify(response=gpt4_response)
 
 @bp.route('/predefined')
 def predefined():
@@ -30,4 +31,3 @@ def predefined():
     ]
     question = random.choice(questions)
     return render_template('index.html', predefined_question=question)
-
