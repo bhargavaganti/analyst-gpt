@@ -45,18 +45,16 @@ table_financial = """
 """
 
 def format_business_analyst_response(response_text):
-    formatted_response = response_text.replace("•", "\n•")
-    return formatted_response
+    formatted_response = response_text.replace("•", "<br>•")
+    return f"<p>{formatted_response}</p>"
 
 def format_investigator_response(response_text):
-    formatted_response = response_text.replace("| ", "").replace(" |", "").replace(" | ", "\n")
-    return formatted_response
+    formatted_response = response_text.replace("| ", "").replace(" |", "").replace(" | ", "<br>")
+    return f"<pre>{formatted_response}</pre>"
 
 def format_financial_response(response_text):
-    formatted_response = response_text.replace("| ", "").replace(" |", "").replace(" | ", "\n")
-    return formatted_response
-
-
+    formatted_response = response_text.replace("| ", "").replace(" |", "").replace(" | ", "<br>")
+    return f"<pre>{formatted_response}</pre>"
 
 def generate_gpt4_response(prompt, modality, api_key):
     if modality == "business analyst":

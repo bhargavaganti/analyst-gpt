@@ -66,19 +66,10 @@
 
                     resultDiv.innerHTML = `<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
 
-                    const text = data.response;
-                    const lines = text.split('<br>');
-                    for (const line of lines) {
-                        const paragraph = document.createElement('p');
-                        paragraph.innerHTML = line;
-                        resultDiv.appendChild(paragraph);
+                    const gpt4_response = data.response.split('\n').map(item => `- ${item}`).join('\n');
+                    const formatted_response = `<pre>${gpt4_response}</pre>`;
+                    resultDiv.innerHTML += formatted_response;
 
-                        const words = line.split(' ');
-                        for (let i = 0; i < words.length; i++) {
-                            await new Promise(resolve => setTimeout(resolve, 25)); // Delay in milliseconds between displaying words
-                            paragraph.innerHTML += words[i] + ' ';
-                        }
-                    }
                 }
 
                 await fetchAndDisplay(modality);
