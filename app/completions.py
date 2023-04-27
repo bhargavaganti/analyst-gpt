@@ -54,7 +54,7 @@ def extract_template_structure(template):
 def generate_gpt4_response(prompt, modality, api_key):
     if modality == "business analyst":
         intro_sentence = "As a business analyst, I have identified the following key insights:"
-        user_prompt = f"Please generate a response about {prompt} from the perspective of a business analyst. Start with this introduction sentence: '{intro_sentence}' Then list 10 key business analysis insights using bullet points. Format each bullet point as a new paragraph and ensure the content is relevant to the role of a business analyst."
+        user_prompt = f"Please generate a response about {prompt} from the perspective of a business analyst. Start with this introduction sentence: '{intro_sentence}' Then list 10 key business analysis insights using bullet points. Do not number the bullet points. Format each bullet point as a new paragraph and ensure the content is relevant to the role of a business analyst."
         template = bullet_points
     elif modality == "investigator":
         intro_sentence = "As an investigator, I have compiled the following data:"

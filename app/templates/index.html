@@ -66,7 +66,8 @@
 
                     resultDiv.innerHTML = `<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
 
-                    const gpt4_response = data.response.split('\n').map(item => item.trim()).join('\n');
+                    const gpt4_response = data.response.split('\n').map(item => item.trim().replace(/^- /, '')).join('\n');
+                    
                     const formatted_response = `<pre>${gpt4_response}</pre>`;
                     resultDiv.innerHTML += formatted_response;
                 }
@@ -209,6 +210,26 @@
             color: #333333;
         }
 
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        pre ul, pre li {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        pre li {
+            position: relative;
+        }
+
+        pre li:before {
+            content: "•";
+            position: absolute;
+            left: -1.2em;
+        }
+ 
     </style>
 
 </head>
@@ -216,18 +237,18 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">AnalystGPT</a>
+            <a class="navbar-brand" href="#">GPT Demo</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item active">
+                    <!-- <li class="nav-item active">
                         <a class="nav-link me-1" href="https://twitter.com/johncollinsai" title="Follow" target="_blank"><i class="fab fa-twitter fa-lg text-white"></i></a>
                     </li>
                     <li class="nav-item active">
                         <a class="nav-link me-2" href="https://www.linkedin.com/in/johncollins-ai/" title="Connect" target="_blank"><i class="fab fa-linkedin fa-lg text-white"></i></a>
-                    </li>
+                    </li> -->
                     <li class="nav-item ml-2">
                         <a href="https://github.com/johncollinsai/analystgpt"><img src="https://github.githubassets.com/favicon.ico" title="Watch" alt="GitHub icon" style="filter: invert(100%);" target="_blank"></a>
                     </li>
