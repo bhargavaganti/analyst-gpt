@@ -66,10 +66,9 @@
 
                     resultDiv.innerHTML = `<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Task Assigned: ${prompt}</h5>`;
 
-                    const gpt4_response = data.response.split('\n').map(item => `• ${item}`).join('\n');
+                    const gpt4_response = data.response.split('\n').map(item => item.trim()).join('\n');
                     const formatted_response = `<pre>${gpt4_response}</pre>`;
                     resultDiv.innerHTML += formatted_response;
-
                 }
 
                 await fetchAndDisplay(modality);
@@ -78,12 +77,6 @@
 
             form.addEventListener("submit", handleSubmit);
 
-            const predefinedQuestion = "{{ predefined_question }}";
-            if (predefinedQuestion) {
-                const questionInput = document.querySelector('#prompt');
-                questionInput.value = predefinedQuestion;
-                handleSubmit(new Event("submit")); // Trigger submit event
-            }
         });
 
     </script>
@@ -271,6 +264,7 @@
                     </div>
                 </div>
             </div>
+
         </form>
         <div id="result" class="mt-4"></div>
     </div>
