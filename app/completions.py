@@ -28,7 +28,7 @@ bullet_points = """
 • Bullet point 7
 • Bullet point 8
 • Bullet point 9
-• Bullet point 10
+• Bullet point 10spec
 """
 
 # Modality: Investigator
@@ -81,11 +81,11 @@ def generate_gpt4_response(prompt, modality, api_key):
         template = bullet_points
     elif modality == "investigator":
         intro_sentence = f"This preliminary investigation of {prompt} has examined general investigative, corporate, and compliance information, and compiled the following results:"
-        user_prompt = f"Please generate a response about {prompt} from the perspective of an investigator. Start with this introduction sentence: '{intro_sentence}'.  Create a first sub-heading 'General Investigative Information'. List 3 key general investigative insights using bullet points for {prompt}. Create a second subheading 'Corporate Information'. List 3 insights regarding corporate information using bullet points for {prompt}. Create a third subheading 'Compliance Information'. List 3 insights regarding compliance information using bullet points for {prompt}. Do not number the bullet points. Format each bullet point as a new paragraph and ensure the content is relevant to the role of an investigator"
+        user_prompt = f"Please generate a response about {prompt} from the perspective of an investigator. Start with this introduction sentence: '{intro_sentence}'.  Create a first subheading 'General Investigative Information'. List 3 key general investigative insights using bullet points for {prompt}. Create a second subheading 'Corporate Information'. List 3 insights regarding corporate information using bullet points for {prompt}. Create a third subheading 'Compliance Information'. List 3 insights regarding compliance information using bullet points for {prompt}. Do not number the bullet points. Format each bullet point as a new paragraph and ensure the content is relevant to the role of an investigator"
         template = table_investigator
     elif modality == "financial analyst":
         intro_sentence = f"This preliminary financial analysis of {prompt} reports upon its assets and liabilities, cashflows and liquidity, and provides 3 key ratios for the company:"
-        user_prompt = f"Please generate a response about {prompt} from the perspective of an financial analyst. Start with this introduction sentence: '{intro_sentence}'.  Create a first sub-heading 'Assets & Liabilities'. List 3 key Assets and Liabilities insights using bullet points for {prompt}. Create a second subheading 'Cashflows & Liquidity'. List 3 insights regarding cashflows and liquidity information using bullet points for {prompt}. Create a third subheading 'Key Financial Ratios'. List 3 key financial ratios with the relevant values using bullet points for {prompt}. Do not number the bullet points. Format each bullet point as a new paragraph and ensure the content is relevant to the role of an financial analyst"
+        user_prompt = f"Please generate a response about {prompt} from the perspective of an financial analyst. Start with this introduction sentence: '{intro_sentence}'.  Create a first subheading 'Assets & Liabilities'. List 3 key Assets and Liabilities insights using bullet points for {prompt}. Create a second subheading 'Cashflows & Liquidity'. List 3 insights regarding cashflows and liquidity information using bullet points for {prompt}. Create a third subheading 'Key Financial Ratios'. List 3 key financial ratios with the relevant values using bullet points for {prompt}. Do not number the bullet points. Format each bullet point as a new paragraph and ensure the content is relevant to the role of an financial analyst"
         template = table_financial
     else:
         raise ValueError("Modality must be one of 'business analyst', 'investigator', or 'financial analyst'.")

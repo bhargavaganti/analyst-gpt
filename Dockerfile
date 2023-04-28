@@ -11,10 +11,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . .
 
+# Copy the images folder to the container
+COPY app/static/images /app/app/static/images
+
 # Expose the port the app runs on
 EXPOSE 8080
 
-# Start the application
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "app:create_app()"]
-
+# Start the application with the increased timeout
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "--timeout", "180", "app:create_app()"]
 
