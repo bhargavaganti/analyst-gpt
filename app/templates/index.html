@@ -162,8 +162,9 @@
 
                     resultDiv.innerHTML = `<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Company: ${prompt}</h5>`;
 
-                    const gpt4_response = data.response.split('\n').map(item => item.trim().replace(/^- /, '• ')).join('\n');
-                    
+                    // const gpt4_response = data.response.split('\n').map(item => item.trim().replace(/^-/, '')).join('\n');
+                    const gpt4_response = data.response;
+
                     const formatted_response = `<pre>${gpt4_response}</pre>`;
 
                     resultDiv.innerHTML += formatted_response;
@@ -322,7 +323,7 @@
         }
 
         pre li:before {
-            content: "•";
+            /* content: "•"; */
             position: absolute;
             left: -1.2em;
         }
@@ -346,12 +347,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <!-- <li class="nav-item active">
-                        <a class="nav-link me-1" href="https://twitter.com/johncollinsai" title="Follow" target="_blank"><i class="fab fa-twitter fa-lg text-white"></i></a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link me-2" href="https://www.linkedin.com/in/johncollins-ai/" title="Connect" target="_blank"><i class="fab fa-linkedin fa-lg text-white"></i></a>
-                    </li> -->
                     <li class="nav-item ml-2">
                         <a href="https://github.com/johncollinsai/analystgpt"><img src="https://github.githubassets.com/favicon.ico" title="Watch" alt="GitHub icon" style="filter: invert(100%);" target="_blank"></a>
                     </li>
@@ -367,10 +362,10 @@
             <div class="mb-3 text-center">
                     <label for="modalities" class="form-label d-block mb-2">Choose a modality:</label>
                     <div id="modalities" class="d-inline-block">
-                    <input type="hidden" name="modality" id="modality" value="business analyst">
-                    <button type="button" class="btn btn-primary active" data-value="business analyst">Analytical</button>
-                    <button type="button" class="btn btn-primary" data-value="investigator">Investigative</button>
-                    <button type="button" class="btn btn-primary" data-value="financial analyst">Financial</button>
+                    <input type="hidden" name="modality" id="modality" value="financial analyst">
+                    <button type="button" class="btn btn-primary active" data-value="financial analyst">Financial</button>
+                    <button type="button" class="btn btn-primary" data-value="business analyst">Business</button>
+                    <button type="button" class="btn btn-primary" data-value="investigator">Investigate</button>
                 </div>
             </div>
       
