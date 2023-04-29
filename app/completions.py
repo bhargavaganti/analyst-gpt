@@ -22,7 +22,7 @@ def generate_gpt4_response(prompt, modality, api_key):
         intro_sentence = f"This preliminary business analysis of {prompt} has identified the following key insights:"
         user_prompt = f"Please generate a response about {prompt} from the perspective of a business analyst. Start with this introduction sentence: '{intro_sentence}' Then list the most important business analysis insights using the bullet point format • "
     elif modality == "financial analyst":
-        intro_sentence = f"This preliminary financial analysis of {prompt} reports upon its assets and liabilities, cashflows and liquidity, and provides 3 key ratios for the company:"
+        intro_sentence = f"This preliminary financial analysis of {prompt} reports upon its assets and liabilities, cashflows and liquidity, and provides 4 key ratios for the company:"
         user_prompt = f"""Please generate a response about {prompt} from the perspective of an financial analyst. Start with this introduction sentence: '{intro_sentence}'.  
         ASSETS & LIABILITIES
         List 4 recent and most important asset and liability facts for {prompt} using the bullet point format •

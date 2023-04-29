@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // DOM elements
     const promptForm = document.getElementById('prompt-form');
     const modalities = document.getElementById('modalities');
     const resultElement = document.getElementById('result');
@@ -7,8 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const skeletonScreen = document.getElementById('skeleton-screen');
     const spinner = document.querySelector('.spinner');
 
-    // Helper functions
-    // Activate the selected modality button
     function activateModalityButton(button) {
         const activeButton = modalities.querySelector('.btn.active');
         if (activeButton) {
@@ -17,30 +14,89 @@ document.addEventListener('DOMContentLoaded', function () {
         button.classList.add('active');
     }
 
-    // Display the result in the result element
     function displayResult(result) {
         resultElement.innerHTML = result;
     }
 
-    // Show or hide the spinner based on the visible parameter
     function toggleSpinner(visible) {
         spinner.style.display = visible ? 'flex' : 'none';
     }
 
-    // Event handlers
-    // Handle form submission
-    function handleFormSubmit(event) {
+    async function fetchData(modality, prompt) {
+        const formData = new FormData(promptForm);
+        const response = await fetch("/get_completion", {
+            method: "POST",
+            body: formData,
+        });
+        const data = await response.json();
+        return data.response;
+    }
+
+    async function handleFormSubmit(event) {
         event.preventDefault();
         toggleSpinner(true);
-        // Fetch data from the API and display it
+
+        const prompt = promptForm.elements["prompt"].value;
+        const modality = promptForm.elements["modality"].value;
+        
+        const response = await fetchData(modality, prompt);
+        displayResult(`<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Company: ${prompt}</h5><pre>${response}</pre>`);
+
+        toggleSpinner(false);
     }
 
-    // Handle download button click
+    async function downloadPdf(modality, prompt, response) {
+        const { PDFDocument, rgb } = pdfLib;
+        const doc = await PDFDocument.create();
+
+        // Customize the PDF format based on the modality
+        let title = "";
+        if (modality === "business analyst") {
+            title = "Business Analyst Report";
+        } else if (modality === "investigator") {
+            title = "Investigator Report";
+        } else if (modality === "financial analyst") {
+            title = "Financial Analyst Report";
+        }
+
+        const fontBytes = await fetch("https://pdf-lib.github.io/examples/fonts/Roboto-Regular.ttf").then((res) => res.arrayBuffer());
+        const font = await doc.embedFont(fontBytes);
+
+        const page = doc.addPage([595, 842]);
+        const content = `${title}\nCompany: ${prompt}\n\n${response}`;
+        const contentArray = content.split('\n');
+
+        page.setFont(font);
+        page.setFontSize(18);
+        page.drawText(title, { x: 50, y: 792 });
+        page.setFontSize(12);
+
+        let yOffset = 50;
+        contentArray.forEach((line, index) => {
+            yOffset += 20;
+            page.drawText(line, { x: 50, y: 792 - yOffset });
+        });
+
+        const pdfBytes = await doc.save();
+        const blob = new Blob([pdfBytes], { type: "application/pdf" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${modality}_report.pdf`;
+        link.click();
+    }
+
     function handleDownloadButtonClick(event) {
-        // Handle download PDF action
+        const modality = document.getElementById("modality").value;
+        const prompt = document.getElementById("prompt").value;
+        const response = document.querySelector("#result pre").innerText;
+
+        toggleSpinner(true);
+        downloadPdf(modality, prompt, response);
+        toggleSpinner(false);
+
+        alert("Download completed. Please check your download folder.");
     }
 
-    // Handle modality button click
     function handleModalityButtonClick(event) {
         const button = event.target;
         const modalityValue = button.dataset.value;
@@ -48,7 +104,6 @@ document.addEventListener('DOMContentLoaded', function () {
         activateModalityButton(button);
     }
 
-    // Event listeners
     modalities.addEventListener('click', function (event) {
         if (event.target.tagName === 'BUTTON') {
             handleModalityButtonClick(event);
