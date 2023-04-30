@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function toggleSpinner(visible) {
         spinner.style.display = visible ? 'flex' : 'none';
+        skeletonScreen.classList.toggle('d-none', !visible);
     }
 
     async function fetchData(modality, prompt) {
