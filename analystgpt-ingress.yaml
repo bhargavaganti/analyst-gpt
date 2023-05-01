@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: analystgpt-ingress-resource
+  annotations: 
+    cert-manager.io/issuer: "letsencrypt-production"
+spec:
+  tls:
+  - hosts:
+    - analyst-gpt.com
+    - www.analyst-gpt.com
+    secretName: analyst-gpt-tls
+  ingressClassName: nginx
+  rules:
+  - host: analyst-gpt.com
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: analystgpt
+            port:
+              number: 8080
+  - host: www.analyst-gpt.com
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: analystgpt
+            port:
+              number: 8080

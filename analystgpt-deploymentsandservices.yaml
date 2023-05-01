@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analystgpt
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      run: analystgpt
+  template:
+    metadata:
+      labels:
+        run: analystgpt
+    spec:
+      containers:
+      - image: asia-southeast1-docker.pkg.dev/johncollins/analyst-gpt/analyst-gpt:v0.2.24
+        imagePullPolicy: IfNotPresent
+        name: analystgpt
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openai-api-key
+              key: key
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1Gi
+          limits:
+            cpu: 500m
+            memory: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analystgpt
+  namespace: default
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: analystgpt
+  type: NodePort
