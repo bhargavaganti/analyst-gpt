@@ -2,7 +2,6 @@ import requests
 import os
 import openai
 import re
-from opencorporates import validate_company_name
 
 def get_api_key():
     api_key = os.environ["OPENAI_API_KEY"]
@@ -10,6 +9,11 @@ def get_api_key():
     return api_key
 
 api_key = get_api_key()
+
+def validate_company_name(company_name):
+    if not re.match(r'^[a-zA-Z0-9\s.,\-]+$', company_name):
+        raise ValueError("Invalid company name. The name should only contain letters, digits, spaces, and common punctuation marks like periods, commas, and hyphens.")
+    return company_name
 
 def generate_gpt4_response(prompt, modality, api_key):
     validate_company_name(prompt) 
