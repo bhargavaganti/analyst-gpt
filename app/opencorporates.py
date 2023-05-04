@@ -1,3 +1,4 @@
+'''
 import re
 import requests
 
@@ -21,3 +22,4 @@ def validate_company_name(company_name):
         raise Exception(f"Error while validating company name: {str(e)}")
 
     return company_name
+'''

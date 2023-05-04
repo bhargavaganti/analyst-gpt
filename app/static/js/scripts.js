@@ -29,8 +29,14 @@ document.addEventListener('DOMContentLoaded', function () {
             method: "POST",
             body: formData,
         });
-        const data = await response.json();
-        return data.response;
+
+        if (response.ok) {
+            const data = await response.json();
+            return { success: true, response: data.response };
+        } else {
+            const error = await response.text();
+            return { success: false, error };
+        }
     }
 
     async function handleFormSubmit(event) {
@@ -39,9 +45,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const prompt = promptForm.elements["prompt"].value;
         const modality = promptForm.elements["modality"].value;
-        
-        const response = await fetchData(modality, prompt);
-        displayResult(`<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Company: ${prompt}</h5><pre>${response}</pre>`);
+
+        const result = await fetchData(modality, prompt);
+
+        if (result.success) {
+            displayResult(`<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Company: ${prompt}</h5><pre>${result.response}</pre>`);
+        } else {
+            displayResult(`<h3 class="text-danger">Error</h3><pre class="text-danger">${result.error}</pre>`);
+        }
 
         toggleSpinner(false);
     }

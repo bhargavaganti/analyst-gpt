@@ -2,7 +2,7 @@ import requests
 import os
 import openai
 import re
-from opencorporates import validate_company_name
+from .crunchbase import validate_company_name 
 
 def get_api_key():
     api_key = os.environ["OPENAI_API_KEY"]
