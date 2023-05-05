@@ -2,8 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: analystgpt-ingress-resource
-  annotations: 
+  annotations:
     cert-manager.io/issuer: "letsencrypt-production"
+    kubernetes.io/ingress.allow-http: "false"
+    kubernetes.io/ingress.global-static-ip-name: "analystgptnginx-regional-static-ip"
 spec:
   tls:
   - hosts:
@@ -32,3 +34,4 @@ spec:
             name: analystgpt
             port:
               number: 8080
+
