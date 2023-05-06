@@ -29,9 +29,12 @@ document.addEventListener('DOMContentLoaded', function () {
             method: "POST",
             body: formData,
         });
-
+    
         if (response.ok) {
             const data = await response.json();
+            if (data.error) {
+                return { success: false, error: data.error };
+            }
             return { success: true, response: data.response };
         } else {
             const error = await response.text();

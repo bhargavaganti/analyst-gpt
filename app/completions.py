@@ -2,7 +2,7 @@ import requests
 import os
 import openai
 import re
-from .crunchbase import validate_company_name 
+from .validatename import validate_company_name_gpt
 
 def get_api_key():
     api_key = os.environ["OPENAI_API_KEY"]
@@ -12,8 +12,10 @@ def get_api_key():
 api_key = get_api_key()
 
 def generate_gpt4_response(prompt, modality, api_key):
-    validate_company_name(prompt) 
-    
+    is_valid = validate_company_name_gpt(prompt, modality, api_key)
+    if not is_valid:
+        raise ValueError(f"Invalid company name: {prompt}")
+
     if modality == "business analyst":
         intro_sentence = f"This preliminary business analysis of {prompt} has identified the following key insights:"
         user_prompt = f"Please generate a response about {prompt} from the perspective of a business analyst. Start with this introduction sentence: '{intro_sentence}' Then list the most important business analysis insights using the bullet point format • "
