@@ -24,39 +24,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function fetchData(modality, prompt) {
-        const formData = new FormData(promptForm);
         const response = await fetch("/get_completion", {
             method: "POST",
-            body: formData,
+            body: new FormData(promptForm),
         });
     
         if (response.ok) {
             const data = await response.json();
-            if (data.error) {
-                return { success: false, error: data.error };
-            }
-            return { success: true, response: data.response };
+            console.log("Data received:", data); // Add this line
+            return data;
         } else {
-            const error = await response.text();
-            return { success: false, error };
+            console.error("Error:", response.statusText); // Add this line
+            return { success: false, error: "An error occurred while fetching data. Please try again later." };
         }
     }
 
     async function handleFormSubmit(event) {
         event.preventDefault();
         toggleSpinner(true);
-
+    
         const prompt = promptForm.elements["prompt"].value;
         const modality = promptForm.elements["modality"].value;
-
+    
         const result = await fetchData(modality, prompt);
-
+    
         if (result.success) {
             displayResult(`<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Company: ${prompt}</h5><pre>${result.response}</pre>`);
         } else {
-            displayResult(`<h3 class="text-danger">Error</h3><pre class="text-danger">${result.error}</pre>`);
+            displayResult(`<h3 class="text-danger">Error</h3><p class="text-danger">${result.error}</p>`);
         }
-
+    
         toggleSpinner(false);
     }
 

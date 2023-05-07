@@ -11,23 +11,27 @@ def index():
 
 @bp.route('/get_completion', methods=["POST"])
 def get_completion():
-    prompt = request.form["prompt"]
-    modality = request.form.get("modality")
-    api_key = get_api_key()
+    try:
+        prompt = request.form['prompt']
+        modality = request.form['modality']
+        api_key = get_api_key()
 
-    # Generate response for the specific modality
-    gpt4_response = generate_gpt4_response(prompt, modality, api_key)
-
-    # jsonify() converts Python dictionary to JSON for the specific modality
-    return jsonify(response=gpt4_response)
+        # Generate response for the specific modality
+        gpt4_response = generate_gpt4_response(prompt, modality, api_key)
+        
+        return jsonify({"success": True, "response": gpt4_response})
+    
+    except ValueError as e:
+        # jsonify() converts Python dictionary to JSON for the specific modality
+        return jsonify({"success": False, "error": str(e)})
 
 @bp.route('/predefined')
 def predefined():
     questions = [
-        "Is Tesla sanctioned",
-        "Does Apple have large cash reserves",
-        "Does Alibaba have Cayman Island registered subsidiaries",
-        "Is Amazon a technology company or a retail company",
+        "NVIDIA",
+        "AMD",
+        "Tesla",
+        "BMW",
     ]
     question = random.choice(questions)
     return render_template('index.html', predefined_question=question)

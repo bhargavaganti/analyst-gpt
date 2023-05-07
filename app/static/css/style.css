@@ -84,6 +84,12 @@ body {
     color: #333333;
 }
 
+#modalities .btn:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    box-shadow: none;
+}
+
 pre {
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -185,3 +191,4 @@ pre li:before {
         transform: translateX(0);
     }
 }
+

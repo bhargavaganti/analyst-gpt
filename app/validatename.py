@@ -1,7 +1,7 @@
 import openai
 
 def validate_company_name_gpt(prompt, modality, api_key):
-    user_prompt = f"Please confirm if {prompt} is a valid company name."
+    user_prompt = f"Please confirm if {prompt} is a valid company name by checking that it exists in a recognized corporate database or is listed on a stock exchange. Anser 'yes' or 'no'."
 
     response = openai.ChatCompletion.create(
         model="gpt-4",
