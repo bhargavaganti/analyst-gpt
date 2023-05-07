@@ -24,4 +24,7 @@ rem.* REM.*
 .env
 .flaskenv
 
+# shell scripts
+*.sh*
+
 
