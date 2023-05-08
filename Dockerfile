@@ -18,5 +18,5 @@ COPY app/static/images /app/app/static/images
 EXPOSE 8080
 
 # Start the application with the increased timeout
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "--timeout", "180", "app:create_app()"]
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "--timeout", "360", "app:create_app()"]
 
