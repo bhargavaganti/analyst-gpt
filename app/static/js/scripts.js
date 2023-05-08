@@ -24,40 +24,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function fetchData(modality, prompt) {
-        const response = await fetch("/get_completion", {
-            method: "POST",
-            body: new FormData(promptForm),
-        });
-    
-        if (response.ok) {
-            const data = await response.json();
-            console.log("Data received:", data); // Add this line
-            return data;
-        } else {
-            console.error("Error:", response.statusText); // Add this line
+        try {
+            const response = await fetch("/get_completion", {
+                method: "POST",
+                body: new FormData(promptForm),
+            });
+        
+            if (response.ok) {
+                const data = await response.json();
+                logInfo("Data received: " + JSON.stringify(data));
+                return data;
+            } else {
+                logError("Error occurred while fetching data", response.statusText);
+                return { success: false, error: "An error occurred while fetching data. Please try again later." };
+            }
+        } catch (error) {
+            logError("Error occurred while fetching data", error);
             return { success: false, error: "An error occurred while fetching data. Please try again later." };
         }
     }
-
+    
     async function handleFormSubmit(event) {
         event.preventDefault();
         toggleSpinner(true);
-    
+        
         const prompt = promptForm.elements["prompt"].value;
         const modality = promptForm.elements["modality"].value;
-    
-        const result = await fetchData(modality, prompt);
-    
-        if (result.success) {
-            displayResult(`<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Company: ${prompt}</h5><pre>${result.response}</pre>`);
-        } else {
-            displayResult(`<h3 class="text-danger">Error</h3><p class="text-danger">${result.error}</p>`);
+        
+        try {
+            const result = await fetchData(modality, prompt);
+        
+            if (result.success) {
+                displayResult(`<h3>Modality: ${modality}</h3><h5 class="text-lightgrey">Company: ${prompt}</h5><pre>${result.response}</pre>`);
+            } else {
+                displayError(result.error, resultElement);
+            }
+        } catch (error) {
+            displayError("An error occurred while processing the request. Please try again later.", resultElement);
         }
-    
+        
         toggleSpinner(false);
     }
 
     async function downloadPdf(modality, prompt, response) {
+    try {
         const { PDFDocument, rgb } = pdfLib;
         const doc = await PDFDocument.create();
 
@@ -89,12 +99,17 @@ document.addEventListener('DOMContentLoaded', function () {
             page.drawText(line, { x: 50, y: 792 - yOffset });
         });
 
-        const pdfBytes = await doc.save();
-        const blob = new Blob([pdfBytes], { type: "application/pdf" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `${modality}_report.pdf`;
-        link.click();
+            const pdfBytes = await doc.save();
+            const blob = new Blob([pdfBytes], { type: "application/pdf" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `${modality}_report.pdf`;
+            link.click();
+            logInfo("Download completed");
+        } catch (error) {
+            logError("Error occurred while downloading PDF", error);
+            alert("An error occurred while downloading the PDF. Please try again later.");
+        }
     }
 
     function handleDownloadButtonClick(event) {
