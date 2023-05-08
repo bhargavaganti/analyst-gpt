@@ -54,6 +54,8 @@ def generate_gpt4_response(prompt, modality, api_key):
         temperature=0.3,  # Decrease temperature to make output more conservative
     )
 
+    print("GPT-4 Response:", response)  # print statements to see the values of variables and the response from the GPT-4 API
+    
     final_response = response.choices[0]["message"]["content"]
 
     return final_response.strip()
