@@ -23,12 +23,21 @@ document.addEventListener('DOMContentLoaded', function () {
         skeletonScreen.classList.toggle('d-none', !visible);
     }
 
+    function fetchWithTimeout(resource, options, timeout = 60000) {
+        return Promise.race([
+            fetch(resource, options),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("Request timed out")), timeout)
+            ),
+        ]);
+    }
+
     async function fetchData(modality, prompt) {
         try {
-            const response = await fetch("/get_completion", {
+            const response = await fetchWithTimeout("/get_completion", {
                 method: "POST",
                 body: new FormData(promptForm),
-            });
+            }, 180000); // Set the timeout to 3 minutes (180000 milliseconds)
         
             if (response.ok) {
                 const data = await response.json();
@@ -40,7 +49,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } catch (error) {
             logError("Error occurred while fetching data", error);
-            return { success: false, error: "An error occurred while fetching data. Please try again later." };
+            return {
+                success: false,
+                error: "An error occurred while fetching data. Please try again later.",
+            };
         }
     }
     
