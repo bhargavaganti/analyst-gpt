@@ -1,4 +1,5 @@
 import random
+import asyncio
 
 from flask import Blueprint, render_template, request, jsonify
 from .completions import generate_gpt4_response, get_api_key
@@ -17,9 +18,9 @@ def get_completion():
         api_key = get_api_key()
 
         # Generate response for the specific modality
-        gpt4_response = generate_gpt4_response(prompt, modality, api_key)
+        response = asyncio.run(generate_gpt4_response(prompt, modality, api_key))
         
-        return jsonify({"success": True, "response": gpt4_response})
+        return jsonify({"success": True, "response": response})
     
     except ValueError as e:
         # jsonify() converts Python dictionary to JSON for the specific modality
