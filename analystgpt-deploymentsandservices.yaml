@@ -13,7 +13,7 @@ spec:
         run: analystgpt
     spec:
       containers:
-      - image: asia-southeast1-docker.pkg.dev/johncollins/analyst-gpt/analyst-gpt:v0.3.10
+      - image: asia-southeast1-docker.pkg.dev/johncollins/analyst-gpt/analyst-gpt:v0.4.1
         imagePullPolicy: IfNotPresent
         name: analystgpt
         ports:
