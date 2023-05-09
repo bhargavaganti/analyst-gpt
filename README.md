@@ -15,7 +15,7 @@ AnalystGPT is a versatile AI-powered analysis tool that generates comprehensive 
 To use AnalystGPT:
 
 1. Choose a report type (business, investigation, finance) by clicking on the corresponding button.
-2. Enter your query in the input field and click the "Submit" button.
+2. Enter the company name you wish to analyse in the input field and click the "Submit" button.
 3. Wait for the AI-generated report to appear on the webpage.
 4. Optionally, click the "Download PDF" button to download the report as a PDF file.
 
@@ -48,6 +48,26 @@ The application is deployed using a Deployment resource, with its container imag
 To secure the application, Cert-Manager is installed to manage SSL certificates. The certificate issuer, Let's Encrypt, is configured using an Issuer resource, specifying the ACME server, email, and privateKeySecretRef along with the http01 solver for domain validation.
 
 An Ingress resource is created to route traffic to the service, using an allocated static IP address, and hosting both analyst-gpt.com and www.analyst-gpt.com domains. TLS termination is configured using a Certificate resource, which is issued by Let's Encrypt and managed by cert-manager, ensuring HTTPS for all connections.
+
+### Speed up
+
+The GPT4 response is quite slow.  The asynchronous function I am using is already optimized to a great extent. It is running the OpenAI API call in a separate thread, which is the best approach to speed up I/O-bound tasks like this one.
+
+However, the speed of this function is primarily dependent on the response time of the OpenAI API, which is out of my control. If the API is slow, my function will also be slow because it has to wait for the response.
+
+Remember that AI computations can be quite intensive, and the speed will also depend on the complexity of the task I am asking the model to perform. In this case, I am asking the model to generate a fairly complex and detailed output, which could take some time.
+
+Here are some tips to potentially improve the performance:
+
+Reduce the amount of data: If possible, try to reduce the max_tokens value. This could speed up the response time but at the cost of potentially less detailed responses.
+
+Concurrency: If you have multiple independent tasks, you can run them concurrently. For example, if I am calling this function multiple times with different prompts and modalities, you can use asyncio.gather() to run these tasks concurrently. However, be aware of the API rate limits.
+
+Check my internet connection: A slow internet connection could also impact the response time.
+
+Upgrade my OpenAI plan: OpenAI may offer different plans with different performance characteristics. Upgrading to a better plan might speed up the response time.
+
+Remember, the time taken by an AI model to generate a response is due to the computational complexity of the task, and there is a limit to how much you can speed it up. It's always a balance between speed and quality of the output.
 
 ### License
 AnalystGPT is released under the MIT License.

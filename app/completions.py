@@ -1,13 +1,17 @@
-import os
-import openai
 import asyncio
 import httpx
+import requests
+import os
+import openai
+import re
 from .validatename import validate_company_name_gpt
 
 def get_api_key():
     api_key = os.environ["OPENAI_API_KEY"]
     openai.api_key = api_key    # set api key for the openai library
     return api_key
+
+api_key = get_api_key()
 
 async def generate_gpt4_response(prompt, modality, api_key):
     is_valid = validate_company_name_gpt(prompt, modality, api_key)
@@ -39,25 +43,28 @@ async def generate_gpt4_response(prompt, modality, api_key):
         """
     else:
         raise ValueError("Modality must be one of 'business analyst', 'investigator', or 'financial analyst'.")
+    
 
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            "https://api.openai.com/v1/engines/gpt-4/completions",
-            headers={"Authorization": f"Bearer {api_key}"},
-            json={
-                "model": "gpt-4",
-                "messages": [
-                    {"role": "system", "content": f"You are a {modality}."},
-                    {"role": "user", "content": user_prompt}
-                ],
-                "max_tokens": 1000,
-                "n": 1,
-                "stop": None,
-                "temperature": 0.3,
-            },
+    loop = asyncio.get_event_loop()
+    openai.api_key = api_key
+
+    def create_chat_completion():
+        return openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": f"You are a {modality}."},
+                {"role": "user", "content": user_prompt}
+            ],
+            max_tokens=1000,
+            n=1,
+            stop=None,
+            temperature=0.3,  # Decrease temperature to make output more conservative
         )
 
-    response_data = response.json()
-    print("GPT-4 Response:", response_data)
-    final_response = response_data["choices"][0]["message"]["content"]
+    # Use the event loop to run the synchronous OpenAI call in a separate thread
+    response = await loop.run_in_executor(None, create_chat_completion)
+
+    print("GPT-4 Response:", response)  # print statements to see the values of variables and the response from the GPT-4 API
+
+    final_response = response['choices'][0]['message']['content']
     return final_response.strip()
